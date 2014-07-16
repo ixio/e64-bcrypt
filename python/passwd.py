@@ -5,6 +5,10 @@
 import argparse
 import hashlib
 import getpass
+try:
+    import clipboard
+except ImportError:
+    print("WARNING: For clipboard management run pip install clipboard")
 
 ARGS = argparse.ArgumentParser(description="Output a strong password")
 ARGS.add_argument("name",type=str)
@@ -84,6 +88,11 @@ def main():
     while not is_secure(res):
         passwd.update('*'.encode('utf-8'))
         res = trad(passwd.digest())[:args.n]
+
+    try:
+        clipboard.copy(res)
+    except NameError:
+        pass
 
     return res
 
