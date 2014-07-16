@@ -2,12 +2,9 @@ import argparse
 import hashlib
 import getpass
 
-# TODO: Check if generated passwd is secure (has one from 0-9,a-z,A-Z and rest)
-# TODO: If not remake pass by adding passwd.update("*")
-
 class Chars:
     def __init__(self):
-        self.bounds = [(35,38),42,(48,58),(64,90),(97,122),124]
+        self.bounds = [(35,37),42,(48,58),(64,72),(74,78),80,(82,90),(97,107),(109,122)]
 
     def __iter__(self):
         return self
@@ -39,6 +36,22 @@ def trad_num(n):
 def trad(s):
     return trad_num(int("".join([str(c) for c in s])))
 
+def is_secure(s):
+    types = [0,0,0,0]
+    for c in s:
+        if ord(c) >= 48 and ord(c) <= 58:
+            types[0] += 1
+        elif ord(c) >= 65 and ord(c) <= 90:
+            types[1] += 1
+        elif ord(c) >= 97 and ord(c) <= 122:
+            types[2] += 1
+        else:
+            types[3] += 1
+    res = True
+    for counter in types:
+        res &= counter > 0
+    return res
+
 passwd = hashlib.sha512()
 
 parser = argparse.ArgumentParser(description="Output a strong password")
@@ -47,9 +60,12 @@ parser.add_argument("-n",type=int,default=8)
 args = parser.parse_args()
 
 passwd.update(args.name.encode("utf-8"))
-
 master_passwd = getpass.getpass(prompt="Master password:")
-
 passwd.update(master_passwd.encode("utf-8"))
 
-print(trad(passwd.digest())[:args.n])
+res = trad(passwd.digest())[:args.n]
+while not is_secure(res):
+    passwd.update("*".encode("utf-8"))
+    res = trad(passwd.digest())[:args.n]
+print(res)
+
