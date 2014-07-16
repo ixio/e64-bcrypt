@@ -8,7 +8,7 @@ import getpass
 
 ARGS = argparse.ArgumentParser(description="Output a strong password")
 ARGS.add_argument("name",type=str)
-ARGS.add_argument("-n",type=int,default=8)
+ARGS.add_argument("-n",type=int,default=12)
 
 class Chars:
     """Iterator that yields wanted characters"""
