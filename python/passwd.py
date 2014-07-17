@@ -14,6 +14,8 @@ ARGS = argparse.ArgumentParser(description="Output a strong password")
 ARGS.add_argument("name",type=str)
 ARGS.add_argument("-n",type=int,default=12)
 
+PREFIX = ""
+
 class Chars:
     """Iterator that yields wanted characters"""
     def __init__(self):
@@ -80,6 +82,7 @@ def main():
     args = ARGS.parse_args()
 
     passwd = hashlib.sha512()
+    passwd.update(PREFIX.encode('utf-8'))
     passwd.update(args.name.encode('utf-8'))
     master_passwd = getpass.getpass(prompt="Master password:")
     passwd.update(master_passwd.encode('utf-8'))
