@@ -13,6 +13,7 @@ except ImportError:
 ARGS = argparse.ArgumentParser(description="Output a strong password")
 ARGS.add_argument("name",type=str)
 ARGS.add_argument("-n",type=int,default=12)
+ARGS.add_argument("-i",type=int,default=10000)
 
 SALT = b"998c5ef69cf2a36f2a0f9dfcac1a878a"
 
@@ -74,10 +75,10 @@ def is_secure(s):
         res &= counter > 0
     return res
 
-def encode(to_encode, size = 64):
+def encode(to_encode, iterations, size = 64):
     """Returns a translated PBKDF2 hash from string input and SALT"""
 
-    pbkdf2_hash = pbkdf2.PBKDF2(to_encode,SALT).read(size)
+    pbkdf2_hash = pbkdf2.PBKDF2(to_encode,SALT,iterations).read(size)
     return trad(pbkdf2_hash)
 
 def main():
@@ -90,11 +91,11 @@ def main():
     master_passwd = getpass.getpass(prompt="Master password:")
 
     seed = args.name + master_passwd
-    passwd = encode(seed)[:args.n]
+    passwd = encode(seed,args.i)[:args.n]
 
     while not is_secure(passwd):
         to_encode += "*"
-        passwd = encode(seed)[:args.n]
+        passwd = encode(seed,args.i)[:args.n]
 
     try:
         clipboard.copy(passwd)
