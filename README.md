@@ -1,4 +1,4 @@
-E64-SHA512 Password Generator
+E64-PBKDF2 Password Generator
 =============================
 
 This is a set of implementations (for now only python) for a specific password generator invented to follow as closely as possible a specific set of rules.
@@ -14,8 +14,8 @@ Rules to follow:
 Specifics of the implementation:
 --------------------------------
 
-* The password is generated from the SHA512 hash of a seed
-* The seed starts off from the concatenation of a prefix (default is empty), the identifier and the master password
+* The password is generated from the PBKDF2 hash of a seed and the SALT constant (default is md5sum of "E64-PBKDF2")
+* The seed starts off from the concatenation of the identifier and the master password
 * The hash is translated in the specified password valid characters
 * Valid characters are #$%*0123456789:@ABCDEFGHJKLMNPRSTUVWXYZabcdefghijkmnopqrstuvwxyz (64 in total)
 * The translation is cropped to a certain number of characters (default is 12)
@@ -31,4 +31,4 @@ Advise on using this password generator:
 * If you have more than one account use the service name + account name as an identifier
 * If you need to change your password add a '*' to your usual identifier (remember that)
 * If you change your password frequently add a date you'll remember to your usual identifier
-* Changing the PREFIX constant to a long string allows for a customised version of the passwords
+* Changing the SALT constant to a long string allows for a customised version of the passwords, it is highly recommanded!

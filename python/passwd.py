@@ -3,8 +3,8 @@
 """A strong password generator"""
 
 import argparse
-import hashlib
 import getpass
+import pbkdf2
 try:
     import clipboard
 except ImportError:
@@ -14,7 +14,7 @@ ARGS = argparse.ArgumentParser(description="Output a strong password")
 ARGS.add_argument("name",type=str)
 ARGS.add_argument("-n",type=int,default=12)
 
-PREFIX = ""
+SALT = b"998c5ef69cf2a36f2a0f9dfcac1a878a"
 
 class Chars:
     """Iterator that yields wanted characters"""
@@ -74,6 +74,12 @@ def is_secure(s):
         res &= counter > 0
     return res
 
+def encode(to_encode, size = 64):
+    """Returns a translated PBKDF2 hash from string input and SALT"""
+
+    pbkdf2_hash = pbkdf2.PBKDF2(to_encode,SALT).read(size)
+    return trad(pbkdf2_hash)
+
 def main():
     """Main program.
 
@@ -81,24 +87,21 @@ def main():
     """
     args = ARGS.parse_args()
 
-    passwd = hashlib.sha512()
-    passwd.update(PREFIX.encode('utf-8'))
-    passwd.update(args.name.encode('utf-8'))
     master_passwd = getpass.getpass(prompt="Master password:")
-    passwd.update(master_passwd.encode('utf-8'))
 
-    res = trad(passwd.digest())[:args.n]
-    while not is_secure(res):
-        passwd.update('*'.encode('utf-8'))
-        res = trad(passwd.digest())[:args.n]
+    seed = args.name + master_passwd
+    passwd = encode(seed)[:args.n]
+
+    while not is_secure(passwd):
+        to_encode += "*"
+        passwd = encode(seed)[:args.n]
 
     try:
-        clipboard.copy(res)
+        clipboard.copy(passwd)
     except NameError:
         pass
 
-    return res
+    return passwd
 
 if __name__ == '__main__':
     print(main())
-
