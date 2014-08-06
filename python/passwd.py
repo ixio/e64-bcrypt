@@ -6,9 +6,9 @@ import argparse
 import getpass
 import bcrypt
 try:
-    import clipboard
+    from pyperclip import copy as clipboard_copy
 except ImportError:
-    print("WARNING: For clipboard management run pip install clipboard")
+    print("WARNING: For clipboard management run pip install pyperclip")
 
 ARGS = argparse.ArgumentParser(description="Output a strong password")
 ARGS.add_argument("name",type=str,
@@ -100,7 +100,7 @@ def main():
         passwd = encode(seed)[:args.n]
 
     try:
-        clipboard.copy(passwd)
+        clipboard_copy(passwd)
     except NameError:
         pass
 
