@@ -11,14 +11,18 @@ except ImportError:
     print("WARNING: For clipboard management run pip install clipboard")
 
 ARGS = argparse.ArgumentParser(description="Output a strong password")
-ARGS.add_argument("name",type=str)
-ARGS.add_argument("-n",type=int,default=12)
+ARGS.add_argument("name",type=str,
+                  help="a unique string identifier for the service needing a password")
+ARGS.add_argument("-n",type=int,default=12,
+                  help="the wanted password length (default is 12)")
 
 SALT = b"$SALT"
 
 class Chars:
     """Iterator that yields wanted characters"""
     def __init__(self):
+        # The following bounds define 64 characters corresponding to:
+        # #$%*0123456789:@ABCDEFGHJKLMNPRSTUVWXYZabcdefghijkmnopqrstuvwxyz
         self.bounds = [(35,37),42,(48,58),(64,72),(74,78),80,(82,90),(97,107),(109,122)]
 
     def __iter__(self):
@@ -75,7 +79,7 @@ def is_secure(s):
     return res
 
 def encode(to_encode, size = 64):
-    """Returns a translated PBKDF2 hash from string input and SALT"""
+    """Returns a translated Bcrypt hash from string input and SALT"""
 
     bcrypt_hash = bcrypt.hashpw(to_encode.encode('UTF-8'),SALT)[30:30+size]
     return trad(bcrypt_hash)
@@ -83,7 +87,7 @@ def encode(to_encode, size = 64):
 def main():
     """Main program.
 
-    Parse arguments, prepare sha512, get master password, return secure password.
+    Parse arguments, get master password, return secure password from seed.
     """
     args = ARGS.parse_args()
 

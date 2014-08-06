@@ -27,6 +27,7 @@ Specifics of the implementation:
 Advise on using this password generator:
 ----------------------------------------
 
+* The install passphrase should be remembered for possible re-install (or multi-install)
 * Usually the identifier would be the name of the service you need a password for
 * If you have more than one account use the service name + account name as an identifier
 * If you need to change your password add a '*' to your usual identifier (remember that)
