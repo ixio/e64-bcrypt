@@ -10,6 +10,7 @@ Rules to follow:
 * Password generation should be deterministic in order to retrieve a password later
 * Passwords should be secure (wide alphabet and sufficient number of characters)
 * Passwords shouldn't be stored, can't be stolen or lost
+* Passwords should be easy to read and copy
 
 Specifics of the implementation:
 --------------------------------

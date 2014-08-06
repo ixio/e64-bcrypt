@@ -21,8 +21,7 @@ SALT = b"$SALT"
 class Chars:
     """Iterator that yields wanted characters"""
     def __init__(self):
-        # The following bounds define 64 characters corresponding to:
-        # #$%*0123456789:@ABCDEFGHJKLMNPRSTUVWXYZabcdefghijkmnopqrstuvwxyz
+        # The following bounds define 64 characters meant to be used for secure passwords
         self.bounds = [(35,37),42,(48,58),(64,72),(74,78),80,(82,90),(97,107),(109,122)]
 
     def __iter__(self):
@@ -97,7 +96,7 @@ def main():
     passwd = encode(seed)[:args.n]
 
     while not is_secure(passwd):
-        to_encode += "*"
+        seed += "*"
         passwd = encode(seed)[:args.n]
 
     try:
